@@ -14,16 +14,18 @@ $(document).ready(function(){
 		if (!state.id) {
 		  return state.text;
 		}
-		if(!state.text_parent){
-			var $state = $(
-			  '<span>' + state.text + '</span>'
-			);	
+		if(state.parents.length > 0){
+			var parentHeadings = "";
+			for (var i = 0; i < state.parents.length; i++) {
+				parentHeadings += state.parents[i]['name'];
+				if(i+1 != state.parents.length){
+					parentHeadings += ',&nbsp;';
+				}
+			}
 		}
-		else {
 			var $state = $(
-			  '<span>' + state.text + ' <span class="parents">/'+state.text_parent+'</span></span>'
+			  '<span>' + state.text + ' <span class="parents">/'+parentHeadings+'</span></span>'
 			);
-		}
 		return $state;
 	};
 	
@@ -32,8 +34,8 @@ $(document).ready(function(){
 		$(".select2").select2({
 			language: "ru",
 			placeholder: "Выберите рубрику",
-			closeOnSelect: false,
-			multiple: true,
+			closeOnSelect: true,
+			multiple: false,
 			templateResult: formatState,
 			minimumInputLength: 3,
 			ajax: {
@@ -43,7 +45,8 @@ $(document).ready(function(){
 			    data:function (params) {
 			    	var query = {
 			        	search: params.term,
-			    	}
+			        	select:$(this).attr('id')
+			  		}
 			    	return query;
 			    },
 			    processResults: function (data) {
