@@ -11,14 +11,19 @@ $(document).ready(function(){
 
 	//Категории рубрик
 	function formatState (state) {
-		var parentHeadings = ["Родительская категория1", "Родительская категория2"]; //массив категорий для вывода в селект
-
 		if (!state.id) {
 		  return state.text;
 		}
-		var $state = $(
-		  '<span>' + state.text + ' <span class="parents">/ ' + parentHeadings[0] + ',&nbsp;' + parentHeadings[1] + '</span>' + '</span>'
-		);
+		if(!state.text_parent){
+			var $state = $(
+			  '<span>' + state.text + '</span>'
+			);	
+		}
+		else {
+			var $state = $(
+			  '<span>' + state.text + ' <span class="parents">/'+state.text_parent+'</span></span>'
+			);
+		}
 		return $state;
 	};
 	
@@ -30,6 +35,26 @@ $(document).ready(function(){
 			closeOnSelect: false,
 			multiple: true,
 			templateResult: formatState,
+			minimumInputLength: 3,
+			ajax: {
+			    url: 'script.php',
+			    type:'GET',
+			    datatype:'json',
+			    data:function (params) {
+			    	var query = {
+			        	search: params.term,
+			    	}
+			    	return query;
+			    },
+			    processResults: function (data) {
+				  return {
+				    "results": JSON.parse(data),
+				    "pagination":{
+				    	"more":false
+				    }
+				  }
+				}
+			}
 		});
 	}
 });
