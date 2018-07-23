@@ -32,26 +32,26 @@
           </div>
           <div class="tab-content">
             <div class="tab-pane fade in active" id="doer-tab">
-              <form name="form-doer" method="post">
+              <form name="form-doer">
                 <div class="row justify-content-between">
                   <div class="col-12 col-md-4">
                     <div class="form-group">
                       <label class="form-label" for="doer-email">Email</label>
-                      <input class="form-control error" type="email" id="doer-email" name="doer-email" placeholder="Введите email" required>
-                      <div class="form-validator"> Неккоректно введён e-mail</div>
+                      <input class="form-control" type="email" id="doer-email" name="doer-email" placeholder="Введите email" required>
+                      <div class="form-validator d-none">Неккоректно введён e-mail</div>
                     </div>
                   </div>
                   <div class="col-12 col-md-4">
                     <div class="form-group">
                       <label class="form-label" for="doer-tel">Телефон</label>
                       <input class="form-control" type="tel" id="doer-tel" name="doer-tel" placeholder="Введите телефон" required>
-                      <div class="form-validator"></div>
+                      <div class="form-validator d-none">Неккоректный номер телефона</div>
                     </div>
                   </div>
                   <div class="col-12 col-md-4">
                     <div class="form-group">
                       <label class="form-label" for="doer-town">Город</label>
-                      <select class="form-select select2" type="text" id="doer-town" name="doer-town" placeholder="Введите город" required>
+                      <select class="form-select select2 select2-town" type="text" id="doer-town" name="doer-town" placeholder="Введите город" required>
                       </select>
                       <div class="form-validator"></div>
                     </div>
@@ -116,7 +116,7 @@
                   <div class="col-12 col-md-4">
                     <div class="form-group">
                       <label class="form-label" for="doer-town">Город</label>
-                      <select class="form-select select2" type="text" id="customer-town" name="customer-town" placeholder="Введите город" required>
+                      <select class="form-select select2 select2-town" type="text" id="customer-town" name="customer-town" placeholder="Введите город" required>
                       </select>
                       <div class="form-validator"></div>
                     </div>

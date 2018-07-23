@@ -60,4 +60,41 @@ $(document).ready(function(){
 			}
 		});
 	}
+	$('.select2-town').select2({
+		placeholder: "Выберите город"
+	});
+	$('.btn[type=submit]').click(function(event){
+		event.preventDefault();
+		$form = $(this).closest('form');
+		$tel = $form.find('[type=tel]');
+		$email = $form.find('[type=email]');
+		var validtel = CheckValidate($tel, /^\d[\d\(\)\ -]{4,14}\d$/);
+		var validmail = CheckValidate($email, /^[\w-\.]+@[\w-]+\.[a-z]{2,4}$/i);
+		if(validtel && validmail){
+			SendRequest($form.serialize(), 'script.php', $form.attr('name'));
+			$form.trigger('reset');
+			$('.select2').val(null).trigger('change');
+		}
+		else return;
+		function CheckValidate($input,reg){
+			if(!reg.test($input.val())){
+				$input.addClass('error');
+				$input.siblings('.form-validator').removeClass('d-none');
+				$input.siblings('.form-validator').addClass('d-block');
+				return false;
+			}
+			return true;
+		}
+
+	});
+
+	function SendRequest(data,url,name){
+		var xhr = new XMLHttpRequest();
+		data+='&form='+name;
+		xhr.open("GET", 'script.php?'+data, true);
+		xhr.send();
+		xhr.addEventListener("load", function(event) {
+			alert('Вы успешно зарегистрировались');
+		});
+	}
 });

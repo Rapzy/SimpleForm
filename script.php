@@ -72,6 +72,25 @@ if (isset($_GET['search']) && strlen($_GET['search']) > 0){
 	}
 }
 
+elseif(isset($_GET['form'])){
+	print_r($_GET);
+	foreach ($_GET as $key => $value) {
+		$user[$key] = htmlentities(trim($value));
+	}
+	if($user['form'] == 'form-doer'){
+		$table = '`executors`';
+		$prefix = 'doer';
+	}
+	elseif($user['form'] == 'form-customer'){
+		$table = '`customers`';
+		$prefix = 'customer';
+	}
+	$query = "
+			INSERT INTO ".$table." (email, phone, city_id, heading_id)
+			VALUES ('".$user[$prefix.'-email']."','".$user[$prefix.'-tel']."',".$user[$prefix.'-town'].",".$user[$prefix.'-heading'].")";
+	$mysqli->query($query);
+}
+
 function MakeResponse($data){
 	echo json_encode($data);
 }
