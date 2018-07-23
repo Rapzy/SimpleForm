@@ -73,22 +73,50 @@ if (isset($_GET['search']) && strlen($_GET['search']) > 0){
 }
 
 elseif(isset($_GET['form'])){
-	print_r($_GET);
 	foreach ($_GET as $key => $value) {
 		$user[$key] = htmlentities(trim($value));
 	}
 	if($user['form'] == 'form-doer'){
-		$table = '`executors`';
 		$prefix = 'doer';
 	}
 	elseif($user['form'] == 'form-customer'){
-		$table = '`customers`';
 		$prefix = 'customer';
 	}
+
 	$query = "
-			INSERT INTO ".$table." (email, phone, city_id, heading_id)
-			VALUES ('".$user[$prefix.'-email']."','".$user[$prefix.'-tel']."',".$user[$prefix.'-town'].",".$user[$prefix.'-heading'].")";
+		SELECT `country`.`id` AS 'country_id'
+		FROM `city` 
+		JOIN `region` ON `city`.`region_id` = `region`.`id`
+		JOIN `country` ON `region`.`country_id` = `country`.`id` 
+		WHERE `city`.`id` = ".$user[$prefix.'-town'];
+	$response = $mysqli->query($query);
+	$row = $response->fetch_array(MYSQLI_ASSOC);
+	
+	$query = "
+			INSERT INTO users (user, email, phone, city_id, heading_id, country_id)
+			VALUES ('".$prefix."','".$user[$prefix.'-email']."','".$user[$prefix.'-tel']."',".$user[$prefix.'-town'].",".$user[$prefix.'-heading'].",".$row['country_id'].")";
 	$mysqli->query($query);
+}
+elseif (isset($_GET['type']) && $_GET['type'] == 'count'){
+	$country = [21,0,1,81];
+	$result['doer'] = CountUsers('doer',$country);
+	$result['customer'] = CountUsers('customer',$country);
+	MakeResponse($result);
+} 
+
+function CountUsers($type, $country){
+	$mysqli = new mysqli('localhost', 'root', '', 'test');
+	for ($i=0; $i < count($country); $i++) { 
+		$query = "
+			SELECT COUNT(*) AS 'count'
+			FROM  users
+			WHERE country_id = ".$country[$i]." AND user='".$type."'";
+		$response = $mysqli->query($query);
+		$row = $response->fetch_array(MYSQLI_ASSOC);
+		$result[] = $row;
+	}
+	$mysqli->close();
+	return $result;
 }
 
 function MakeResponse($data){
